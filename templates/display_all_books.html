@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>"Welcome in Book Bay" {{genre}} library</title>
+</head>
+<body>
+        <h1> Welcome in Book Bay Library of {{genre}}</h1>
+        <ul>
+{% for book in books %}
+    <li>Title: {{book.title}}.  Author: {{book.author}}</li>
+{% endfor %}
+</ul>
+
+<h4>Go back to menu</h4>
+<form action="/go_back" method="POST">
+        <button><a>Go back</a></button><br>
+</form>
+</body>
+</html>

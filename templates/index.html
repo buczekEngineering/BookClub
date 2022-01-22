@@ -1,0 +1,52 @@
+<!doctype html>
+
+
+<head><title>Welcome to "Book Bay"</title>
+    <meta charset=utf-8>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+<h1>Add a book to the BookBay library</h1>
+<form action="/add" method="POST">
+    <label for="Title">Title:</label><br>
+    <input type="text" id="title" name="title"><br><br>
+    <label for="author">Author:</label><br>
+    <input type="text" id="author" name="author"><br><br>
+
+    <label for="genre">Genre:</label>
+    <select name="genre" id="genre">
+        <option value="fantasy">Fantasy</option>
+        <option value="sci-fi">Sci-Fi</option>
+        <option value="social science">Social Science</option>
+        <option value="IT">Information Technology</option>
+    </select>
+    <br><br>
+    <br>
+         <textarea rows = "5" cols = "60" name = "comment">
+            Enter a review ...
+         </textarea><br>
+        <button><a>Add</a></button><br>
+
+</form>
+<br><br>
+<h1>Find all books within your favourite genre!</h1>
+<form action="/find_by_id" method="POST">
+
+    <label for="genre">Choose the genre:</label>
+    <select name="genre" id="genre1">
+        <option value="fantasy">Fantasy</option>
+        <option value="sci-fi">Sci-Fi</option>
+        <option value="social science">Social Science</option>
+        <option value="IT">Information Technology</option>
+    </select>
+        <button><a>Find</a></button><br>
+</form>
+<br><br>
+    <h1>Find all book's reviews!</h1>
+    <form action="/display_comments" method="POST">
+         <label for="Title">Enter the book's title:</label><br>
+    <input type="text" id="title1" name="title">
+        <button><a>Display Comments</a></button><br>
+
+</form>
+</body>
