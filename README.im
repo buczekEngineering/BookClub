@@ -1,0 +1,9 @@
+Current setup for connecting to dB:
+im terminal:
+python
+from app import db
+db.create_all()
+exit()
+
+
+Documentation: https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/
