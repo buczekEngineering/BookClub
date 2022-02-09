@@ -8,7 +8,7 @@ from BookClub.models import Comment, Book
 
 @app.route("/")
 def health():
-    return render_template("index.html")
+    return render_template("templates/index.html")
 
 @app.route("/add", methods=['POST'])
 def add_book():
