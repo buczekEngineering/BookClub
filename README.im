@@ -1,7 +1,8 @@
 Current setup for connecting to dB:
 im terminal:
 python
-from app import db
+from BookClub import db
+from BookClub.models import Book, Comment
 db.create_all()
 exit()
 
