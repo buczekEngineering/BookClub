@@ -1,4 +1,18 @@
-from BookClub import app
+
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+# one of the configurations key that flask is using
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:3004@localhost:5432/books'
+# connect app to db
+db = SQLAlchemy(app)
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

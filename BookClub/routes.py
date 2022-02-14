@@ -1,16 +1,14 @@
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from BookClub import app
 from BookClub import db
 from BookClub.models import Comment, Book
 
-
 @app.route("/")
 def health():
-    return render_template("templates/index.html")
+    return render_template("index.html")
 
-@app.route("/add", methods=['POST'])
+@app.route("/add", methods=['GET'])
 def add_book():
     comment = request.form.get("comment", None)
     title = request.form.get('title', None)
