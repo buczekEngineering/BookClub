@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import  Api
 from resources.book import Book, BooksList
+from resources.user import UserRegister, UserLogin
 from db import db
 
 db_name = "data.db"
@@ -13,6 +14,7 @@ api = Api(app)
 
 api.add_resource(Book, "/book")
 api.add_resource(BooksList, "/books")
+api.add_resource(UserRegister, "/register")
 
 if __name__ == "__main__":
     db.init_app(app)
