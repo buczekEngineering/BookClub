@@ -9,13 +9,16 @@ class BookModel(db.Model):
     title = db.Column(db.String(80))
     author = db.Column(db.String(80))
 
+    comments = db.relationship('CommentModel', lazy='dynamic')
+
     def __init__(self, title, author):
         self.title = title
         self.author = author
 
     def json(self):
         return {"title": self.title,
-                "author": self.author}
+                "author": self.author,
+                "comments": [comment.json() for comment in self.comments.all()]}
 
     @classmethod
     def find_by_title(cls, title):
