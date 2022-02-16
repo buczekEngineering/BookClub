@@ -1,12 +1,7 @@
-# api is using resources and every resource needs to be a class
-from flask import request
 from flask_restful import Resource, reqparse
-
 from models.book import BookModel
 
-books = []
 REQUIRED_FIELD = "This filed is required."
-
 
 class Book(Resource):
     parser = reqparse.RequestParser()
@@ -54,6 +49,8 @@ class Book(Resource):
 
         return book.json()
 
+
 class BooksList(Resource):
+
     def get(self):
         return {"books": list(map(lambda x: x.json(), BookModel.query.all()))}

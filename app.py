@@ -15,6 +15,7 @@ api = Api(app)
 api.add_resource(Book, "/book")
 api.add_resource(BooksList, "/books")
 api.add_resource(UserRegister, "/register")
+api.add_resource(UserLogin, "/login")
 
 if __name__ == "__main__":
     db.init_app(app)
