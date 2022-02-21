@@ -1,8 +1,6 @@
-from flask import jsonify
 from flask_restful import Resource, reqparse
 from models.book import BookModel
 from models.comments import CommentModel
-from resources.book import Book
 
 REQUIRED_FIELD = "This filed is required."
 
@@ -42,8 +40,10 @@ class CommentList(Resource):
 
     def post(self):
         data = CommentList.parser.parse_args()
-        if BookModel.query.filter_by(title=data["title"]):
+        if BookModel.query.filter_by(title=data["title"]).first() is not None:
             comments = Comment.find_comment(data["title"])
             return {"title": data["title"],
                     "comments": comments
                     }
+        else:
+            return {"message":"This title does not exists"}
