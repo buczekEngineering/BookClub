@@ -4,6 +4,11 @@ from models.comments import CommentModel
 
 REQUIRED_FIELD = "This filed is required."
 
+def book_exists(title):
+    if BookModel.find_by_title(title):
+        return True
+    else:
+        return False
 
 class Comment(Resource):
     parser = reqparse.RequestParser()
@@ -40,10 +45,12 @@ class CommentList(Resource):
 
     def post(self):
         data = CommentList.parser.parse_args()
-        if BookModel.query.filter_by(title=data["title"]).first() is not None:
+        if not book_exists(data["title"]):
+            return {"message": "This title does not exists"}, 400
+
+        else:
+            BookModel.query.filter_by(title=data["title"]).first()
             comments = Comment.find_comment(data["title"])
             return {"title": data["title"],
                     "comments": comments
                     }
-        else:
-            return {"message":"This title does not exists"}

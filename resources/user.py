@@ -1,4 +1,5 @@
 import bcrypt
+from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_restful import Resource, reqparse
 
 from models.user import UserModel
@@ -8,6 +9,13 @@ FIELD_REQUIRED = "This field is required"
 
 def user_exists(username):
     if UserModel.find_by_username(username):
+        return True
+    else:
+        return False
+
+
+def user_id_exists(user_id):
+    if UserModel.find_by_id(user_id):
         return True
     else:
         return False
@@ -59,10 +67,35 @@ class UserLogin(Resource):
         data = UserLogin.parser.parse_args()
         if not user_exists(data["username"]):
             msg = 'Invalid username'
-            return generate_json(301, msg)
+            return generate_json(401, msg)
 
         if not is_valid_pw(data["username"], data["password"]):
             msg = "Invalid password"
-            return generate_json(302, msg)
+            return generate_json(401, msg)
+
+        user = UserModel.find_by_username(username=data["username"])
+        access_token = create_access_token(identity=user.id, fresh=True)
+        refresh_token = create_refresh_token(user.id)
+        return {
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }, 200
 
         return {'message': 'You are logged in.'}, 200
+
+
+class User(Resource):
+    @classmethod
+    def get(cls, user_id):
+        if not user_id_exists(user_id):
+            return {'message': "User not found"}, 404
+        user = UserModel.find_by_id(user_id)
+        return user.json()
+
+    @classmethod
+    def delete(cls, user_id):
+        if not user_id_exists(user_id):
+            return {'message': "User not found"}, 404
+        user = UserModel.find_by_id(user_id)
+        user.delete_from_db()
+        return {'message': 'User deleted'}, 200
