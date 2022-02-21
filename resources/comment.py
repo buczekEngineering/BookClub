@@ -15,11 +15,13 @@ class Comment(Resource):
 
     @classmethod
     def find_comment(cls, title):
-        results = BookModel.query.filter_by(title=title).all()
-        comments = [result.comments for result in results]
-        print(f"Comments -> {comments}")
-        print(f"Jsonified comments: {jsonify(list(map(lambda x: x.json(), comments)))}")
-        return jsonify(comments)
+        try:
+            book_id = BookModel.query.filter_by(title=title).first().id
+        except:
+            return {"message": "This book title does not exist in the database"}, 400
+
+        queried_comments = CommentModel.query.filter_by(book_id=book_id).all()
+        return [comment.comment for comment in queried_comments]
 
     def post(self):
         data = Comment.parser.parse_args()
@@ -43,4 +45,5 @@ class CommentList(Resource):
         if BookModel.query.filter_by(title=data["title"]):
             comments = Comment.find_comment(data["title"])
             return {"title": data["title"],
-                    "comments": jsonify(comments)}
+                    "comments": comments
+                    }
