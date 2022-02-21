@@ -1,4 +1,3 @@
-import sqlite3
 from db import db
 
 
@@ -17,8 +16,8 @@ class BookModel(db.Model):
 
     def json(self):
         return {"title": self.title,
-                "author": self.author,
-                "comments": [comment.json() for comment in self.comments.all()]}
+                "author": self.author
+               }
 
     @classmethod
     def find_by_title(cls, title):

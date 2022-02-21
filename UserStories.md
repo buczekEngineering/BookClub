@@ -3,3 +3,4 @@
 # user can obtain email with is books 
 # user should be able to add comments to each book 
 # user should be able to interact with the app via nice front-end [details unknown]
+# implemnet error-handlings for all routes

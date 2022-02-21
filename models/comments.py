@@ -6,19 +6,17 @@ class CommentModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String(1000))
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
-    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey("books.id"))
 
-    book = db.relationship('BookModel')
-    # user = db.relationship('UserModel')
+    book = db.relationship("BookModel")
 
     def __init__(self, comment, book_id):
         self.comment = comment
         self.book_id = book_id
-        # self.user_id = user_id
+
 
     def json(self):
-        return {"comment": self.comment}
+        return {"comments": self.comment}
 
     @classmethod
     def find_by_title(cls, title):
@@ -31,4 +29,5 @@ class CommentModel(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
 

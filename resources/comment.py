@@ -4,13 +4,6 @@ from models.comments import CommentModel
 
 REQUIRED_FIELD = "This filed is required."
 
-def find_id(title, author):
-    id = BookModel.query.filter_by(title=title, author=author).first().id
-    return id
-def find_comment(title):
-    results = BookModel.query.filter_by(title=title).all()
-    comments = [result.comments for result in results]
-    return comments
 
 class Comment(Resource):
     parser = reqparse.RequestParser()
@@ -18,13 +11,22 @@ class Comment(Resource):
     parser.add_argument('author', type=str, required=True, help=REQUIRED_FIELD)
     parser.add_argument('comment', type=str, required=True, help=REQUIRED_FIELD)
 
+    @classmethod
+    def find_comment(cls, title):
+        try:
+            book_id = BookModel.query.filter_by(title=title).first().id
+        except:
+            return {"message": "This book title does not exist in the database"}, 400
+
+        queried_comments = CommentModel.query.filter_by(book_id=book_id).all()
+        return [comment.comment for comment in queried_comments]
+
     def post(self):
         data = Comment.parser.parse_args()
         if not BookModel.find_by_title(data["title"]):
             return {'message': f'The book {data["title"]} does not exists'}, 400
 
-        book_id = find_id(data["title"],data["author"])
-        new_comment = CommentModel(data["comment"], book_id)
+        new_comment = CommentModel(data["comment"], data["title"])
         try:
             CommentModel.save_to_db(new_comment)
         except:
@@ -38,7 +40,10 @@ class CommentList(Resource):
 
     def post(self):
         data = CommentList.parser.parse_args()
-        if BookModel.query.filter_by(title=data["title"]):
-            comments = find_comment(data["title"])
+        if BookModel.query.filter_by(title=data["title"]).first() is not None:
+            comments = Comment.find_comment(data["title"])
             return {"title": data["title"],
-                    "comments": comments}
+                    "comments": comments
+                    }
+        else:
+            return {"message":"This title does not exists"}

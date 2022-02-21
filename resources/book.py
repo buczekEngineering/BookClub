@@ -4,15 +4,20 @@ from models.comments import CommentModel
 
 REQUIRED_FIELD = "This filed is required."
 
-def find_id(title, author):
-    id = BookModel.query.filter_by(title=title, author=author).first().id
-    return id
 
 class Book(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('title', type=str, required=True, help=REQUIRED_FIELD)
     parser.add_argument('author', type=str, required=True, help=REQUIRED_FIELD)
     parser.add_argument('comment', type=str)
+
+    @classmethod
+    def find_book_id(cls, title, author):
+        return BookModel.query.filter_by(title=title, author=author).first().id
+
+    @classmethod
+    def query_all(cls):
+        return cls.query.all()
 
     def get(self):
         data = Book.parser.parse_args()
@@ -25,11 +30,16 @@ class Book(Resource):
         data = Book.parser.parse_args()
         if BookModel.find_by_title(data["title"]):
             return {'message': f'A book with the name {data["title"]} already exists'}, 400
+
         new_book = BookModel(data["title"], data["author"])
         try:
             BookModel.save_to_db(new_book)
         except:
             return {"message": "An error occurred while inserting the book."}, 500
+        book_id = Book.find_book_id(data["title"], data["author"])
+        if data["comment"] is not "":
+            new_comment = CommentModel(data["comment"], book_id)
+            CommentModel.save_to_db(new_comment)
 
         return new_book.json(), 201
 
@@ -45,7 +55,7 @@ class Book(Resource):
         data = Book.parser.parse_args()
         book = BookModel.find_by_title(data["title"])
         if book is None:
-            book = BookModel(data["title"], data["author"])
+            book = BookModel(**data)
             book.save_to_db()
         else:
             book.author = data["author"]
@@ -58,4 +68,4 @@ class Book(Resource):
 class BooksList(Resource):
 
     def get(self):
-        return {"books": list(map(lambda x: x.json(), BookModel.query.all()))}
+        return {"books": list(map(lambda x: x.json(), BookModel.query_all()))}
