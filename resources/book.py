@@ -17,7 +17,7 @@ class Book(Resource):
 
     @classmethod
     def query_all(cls):
-        return cls.query.all()
+        return BookModel.query.all()
 
     def get(self):
         data = Book.parser.parse_args()
@@ -68,4 +68,4 @@ class Book(Resource):
 class BooksList(Resource):
 
     def get(self):
-        return {"books": list(map(lambda x: x.json(), BookModel.query_all()))}
+        return {"books": list(map(lambda x: x.json(), Book.query_all()))}
