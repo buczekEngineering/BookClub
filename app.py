@@ -19,6 +19,13 @@ api = Api(app)
 
 jwt = JWTManager(app)
 
+# identity is having a value of the user id
+@jwt.additional_claims_loader
+def add_claims_to_jwt(identity):
+    if identity == 1:
+        return {'is_admin': True} # this should come from db or config file
+    return {'id_admin': False}
+
 @app.before_first_request
 def create_tables():
     db.create_all()

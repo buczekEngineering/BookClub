@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required, get_jwt
 from flask_restful import Resource, reqparse
 from models.book import BookModel
 from models.comments import CommentModel
@@ -19,6 +20,8 @@ class Book(Resource):
     def query_all(cls):
         return BookModel.query.all()
 
+
+    @jwt_required
     def get(self):
         data = Book.parser.parse_args()
         book = BookModel.find_by_title(data["title"])
@@ -26,6 +29,7 @@ class Book(Resource):
             return book.json()
         return {"message": "book not found"}, 404
 
+    @jwt_required
     def post(self):
         data = Book.parser.parse_args()
         if BookModel.find_by_title(data["title"]):
@@ -43,7 +47,11 @@ class Book(Resource):
 
         return new_book.json(), 201
 
+    @jwt_required
     def delete(self):
+        claims = get_jwt()
+        if not claims['is_admin']:
+            return { 'message': 'Admin privilege required'}, 401
         data = Book.parser.parse_args()
         book = BookModel.find_by_title(data["title"])
         if book:
@@ -67,5 +75,6 @@ class Book(Resource):
 
 class BooksList(Resource):
 
+    @jwt_required
     def get(self):
         return {"books": list(map(lambda x: x.json(), Book.query_all()))}
